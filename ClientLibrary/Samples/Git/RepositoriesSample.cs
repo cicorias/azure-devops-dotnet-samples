@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,16 +22,22 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Git
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
             List<GitRepository> repos = gitClient.GetRepositoriesAsync(projectId).Result;
-            
+
+
+            var output = File.CreateText(@"e:\temp\outputurl.txt");
+
             foreach(GitRepository repo in repos)
             {
                 Console.WriteLine("{0} {1} {2}", repo.Id, repo.Name, repo.RemoteUrl);
+                output.WriteLine(repo.SshUrl);
             }
+
+            output.Close();
 
             return repos;            
         }
 
-        [ClientSampleMethod]
+        //[ClientSampleMethod]
         public IEnumerable<GitCommitRef> ListCommitsForRepository()
         {
             VssConnection connection = this.Context.Connection;
